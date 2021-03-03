@@ -1,12 +1,14 @@
 FROM node:lts-alpine as BUILD_TYPESCRIPT
 
-COPY src .
+COPY src /src
 COPY tsconfig.json .
 COPY package.json .
 COPY package-lock.json .
 
-RUN npm install
 RUN npm install typescript -g
+
+RUN npm install
+
 RUN tsc
 
 FROM node:lts-alpine
