@@ -13,6 +13,7 @@ import {getGuildSettingsForMessage} from "./database/GuildSettings";
 import CompetitiveRole from "./roles/CompetitiveRole"
 import RainbowDisagree2Command from "./commands/owneronly/rainbowsiagree2";
 import NoFunCommand from "./commands/owneronly/nofun";
+import * as Status from "./resources/Status"
 
 require("mongoose").Promise = global.Promise;
 
@@ -57,7 +58,7 @@ discordClient.registry
 discordClient.once('ready', () => {
     Logger.info('Successfully connected to Discord.');
     GoogleApi.init()
-    discordClient.user.setActivity("NOFUN.mp4").catch(Logger.error)
+    Status.init()
 });
 
 discordClient.on('message', async message => {

@@ -1,5 +1,4 @@
 import * as mongoose from "mongoose";
-import {CommandoMessage} from "discord.js-commando";
 import {Guild} from "discord.js";
 
 export async function getGuildSettingsForMessage(guild: Guild) {
@@ -31,7 +30,7 @@ export const GuildSettingsSchema = new mongoose.Schema({
     }
 })
 
-export const GuildSettingsModel = mongoose.model<IGuildSettings>('Player', GuildSettingsSchema);
+export const GuildSettingsModel = mongoose.model<IGuildSettings>('GuildSettings', GuildSettingsSchema);
 
 export interface IGuildSettings extends mongoose.Document{
     guild_id : String,
