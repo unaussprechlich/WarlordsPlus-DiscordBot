@@ -1,6 +1,5 @@
 import * as Winston from "winston"
 
-
 export default Winston.createLogger({
     format : Winston.format.combine(
         Winston.format.colorize(),

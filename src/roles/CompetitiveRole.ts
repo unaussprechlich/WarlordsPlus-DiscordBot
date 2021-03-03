@@ -1,13 +1,13 @@
 import AbstractRole from "./AbstractRole";
 
 
-class TeamBalancerRole extends AbstractRole{
+class CompetitiveRole extends AbstractRole{
     constructor() {
         super(
-            "W+ TeamBalancer",
+            "W+ Competitive",
             "Users with this permission are able to use the W+ Balancer."
         );
     }
 }
 
-export default new TeamBalancerRole()
+export default new CompetitiveRole()

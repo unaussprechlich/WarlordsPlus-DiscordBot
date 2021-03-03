@@ -13,7 +13,7 @@ FROM node:lts-alpine
 
 COPY package.json .
 COPY package-lock.json .
-COPY resources .
+COPY src/resources .
 COPY LICENSE .
 
 COPY --from=BUILD_TYPESCRIPT /.out .

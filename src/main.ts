@@ -1,3 +1,5 @@
+import * as mongoose from "mongoose";
+
 if(process.env.NODE_ENV === "development"){
     require("dotenv").config()
 }
@@ -6,6 +8,18 @@ import {CommandoClient} from 'discord.js-commando';
 import * as Path from "path"
 import Logger from "./util/Logger";
 import * as GoogleApi from "./teambalancer/GoogleApi";
+import {DiscordToMinecraftModel} from "./database/DiscordToMinecraft";
+import {getGuildSettingsForMessage} from "./database/GuildSettings";
+import CompetitiveRole from "./roles/CompetitiveRole"
+import RainbowDisagree2Command from "./commands/owneronly/rainbowsiagree2";
+import NoFunCommand from "./commands/owneronly/nofun";
+
+require("mongoose").Promise = global.Promise;
+
+if(!process.env.MONGODB_URI) throw "Missing MongoDB connection string, please provide it with the environment variable 'MONGO_DB'!";
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser : true, useUnifiedTopology : true }).then( _ => {
+    Logger.info("Successfully connected to MongoDB.")
+});
 
 if(!process.env.BOT_TOKEN){
     throw Error("The environment variable BOT_TOKEN has not been specified! Please add a token to authenticate your bot.")
@@ -35,7 +49,7 @@ export const discordClient = new CommandoClient({
 
 discordClient.registry
     .registerDefaultTypes()
-    .registerGroups([["mod", "Moderation Group"], ["teambalancer", "Balancer Group"], ["general", "General Group"], ["owneronly", "Owneronly Group"]])
+    .registerGroups([["mod", "Moderation Group"], ["competitive", "Balancer Group"], ["warlordssr", "WarlordsSR Group"], ["general", "General Group"], ["owneronly", "Owneronly Group"]])
     .registerDefaultGroups()
     .registerDefaultCommands()
     .registerCommandsIn(Path.join(__dirname, "commands"))
@@ -50,10 +64,22 @@ discordClient.on('message', async message => {
     try {
         if (message.author.bot) return;
 
+        await RainbowDisagree2Command.onMessage(message)
+        await NoFunCommand.onMessage(message)
+
         //TODO you can add custom message handling here
 
     } catch (err) {
         Logger.error(err);
+    }
+})
+
+discordClient.on("guildMemberAdd", async function (member){
+    const guildSettings = await getGuildSettingsForMessage(member.guild);
+    if(!guildSettings.competitive.enabled) return;
+    const uuid = await DiscordToMinecraftModel.findOne({client_id : member.id}).exec()
+    if(uuid && uuid.minecraft_uuid){
+        await member.roles.add(CompetitiveRole.id(member.guild))
     }
 })
 

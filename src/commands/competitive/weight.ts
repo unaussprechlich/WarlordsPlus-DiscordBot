@@ -1,5 +1,5 @@
 import {Command, CommandoMessage} from "discord.js-commando";
-import BalancerRole from "../../roles/TeamBalancerRole";
+import BalancerRole from "../../roles/CompetitiveRole";
 import Logger from "../../util/Logger";
 import {getBalancerSpreadSheet} from "../../teambalancer/GoogleApi";
 
@@ -9,7 +9,7 @@ module.exports = class WeightCommand extends Command{
         super(discordClient,{
             name : "weight",
             description: "Returns weight of player",
-            group: "teambalancer",
+            group: "competitive",
             memberName: "weight",
             guildOnly : true,
             args : [

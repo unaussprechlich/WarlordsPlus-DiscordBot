@@ -1,15 +1,16 @@
 import {Message, VoiceConnection} from "discord.js";
 import {Readable} from "stream";
 import * as ytdl from "ytdl-core"
+import UserError from "./UserError";
+
 
 const voiceMap : { [guild : string]: VoiceConnection} = {};
 
-export async function playYoutube(msg : Message, url : string, volume? : number){
+export async function playYoutube(msg : Message, url : string, showMessage : boolean = true, volume? : number){
     if(!url.match(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/)){
-        await msg.reply("This is not a youtube link!");
-        return;
+        throw new UserError(`The ${url} is not a YouTube link!`);
     } else {
-        await msg.reply("Playing: " + url)
+        if(showMessage) await msg.channel.send("Playing: " + url)
         const ytStream = ytdl(url, { filter : 'audioonly'})
         await playStream(msg, ytStream, volume)
     }
@@ -28,12 +29,16 @@ async function playStream(msg : Message, stream : Readable, volume? : number | 1
     });
 }
 
-async function joinVoice(msg : Message){
+export async function leaveVoice(msg : Message){
+    voiceMap[msg.guild.id].disconnect();
+    delete voiceMap[msg.guild.id];
+}
+
+export async function joinVoice(msg : Message){
     if (msg.member.voice.channel){
         voiceMap[msg.guild.id] = await msg.member.voice.channel.join();
         return voiceMap[msg.guild.id];
     } else {
-        await msg.reply("You are not in a voice channel");
-        return null;
+        throw new UserError("You are not in a voice channel");
     }
 }
