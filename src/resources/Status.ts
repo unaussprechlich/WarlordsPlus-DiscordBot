@@ -16,7 +16,7 @@ const STATUS = [
 
 export function init(){
     setInterval(() => {
-        discordClient.user.setActivity("", {
+        discordClient.user.setActivity(STATUS[Math.floor(Math.random()*STATUS.length)], {
             url: process.env.BOT_INVITE_LINK,
             name : STATUS[Math.floor(Math.random()*STATUS.length)],
             type : "PLAYING"

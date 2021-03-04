@@ -7,7 +7,7 @@ import {DiscordToMinecraftModel} from "../../database/DiscordToMinecraft";
 import {GuildMember, MessageEmbed} from "discord.js";
 import UserError from "../../util/UserError";
 
-const PLAYER_REQUIREMENT = 2
+const PLAYER_REQUIREMENT = 8
 
 module.exports = class BalanceCommand extends Command{
 
